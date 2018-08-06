@@ -2,7 +2,6 @@ import jimp from 'jimp';
 import mime from 'mime';
 import fs from 'fs';
 import path from 'path';
-import promisify from 'util.promisify';
 
 import {
   enforceArray,
@@ -103,109 +102,26 @@ const getCompiledFilename = (templateString, userTags) => {
   return compiled;
 };
 
-const genHashMapFromIconsMap = async iconsMap =>
-  flattenArray(
-    await Promise.all(
-      Object.keys(iconsMap).map(async src => {
-        const buffer = await promisify(fs.readFile)(src);
-        const hash = createHash(buffer);
-        const item = {
-          src,
-          hash,
-        };
-
-        return item;
-      }),
-    ),
-  ).reduce((acc, { src, hash }) => {
-    acc[src] = hash;
-
-    return acc;
-  }, {});
-
-const readExistingFile = (filepath, encoding) => {
-  try {
-    const content = fs.readFileSync(filepath, encoding);
-
-    return content;
-  } catch (error) {
-    return null;
-  }
-};
-
-const readExistingHashMap = (options, compilation) => {
-  const { outputPath } = compilation.compiler;
-  const filepath = path.join(
-    outputPath,
-    options.output.icons.destination,
-    '.cache.json',
-  );
-  const iconsHashMap = readExistingFile(filepath, 'utf-8');
-  if (!iconsHashMap) {
-    return null;
-  }
-
-  const parsedIconsHashMap = JSON.parse(iconsHashMap);
-
-  return parsedIconsHashMap;
-};
-
-const isAlreadyCached = (options, compilation, existingIconsHashMap, src) => {
-  if (!options.output.icons.persistentCache) {
-    return false;
-  }
-
-  const { context } = compilation.compiler;
-  const srcFilepath = path.join(context, src);
-  const existingImage = readExistingFile(srcFilepath);
-
-  if (existingImage) {
-    const srcExistingHash = existingIconsHashMap[src];
-    const srcHash = createHash(existingImage);
-
-    if (srcExistingHash === srcHash) {
-      return true;
-    }
-  }
-
-  return false;
-};
-
 const icons = {
   async generateIconsMap(options, compilation) {
     const iconSets = getIconSetsFromOptions(options);
     const iconsMap = getIconsMapFromSets(iconSets);
-    const iconsHashMap = await genHashMapFromIconsMap(iconsMap);
-
-    const existingIconsHashMap =
-      readExistingHashMap(options, compilation) || {};
 
     await iterateOverIconsMap(iconsMap, async (src, size) => {
-      const shouldIgnore = isAlreadyCached(
-        options,
-        compilation,
-        existingIconsHashMap,
-        src,
-      );
-
       const mimeType = getMimeTypeFromImage(src);
       const { width, height, wxh } = parseSize(size);
       const resizingAlgorithm = options.output.icons.pixelArt
         ? jimp.RESIZE_NEAREST_NEIGHBOR
         : null;
 
-      const buffer = !shouldIgnore
-        ? await jimp
-            .read(src)
-            .then(img =>
-              img
-                .resize(width, height, resizingAlgorithm)
-                .getBufferAsync(mimeType),
-            )
-            .catch(error => console.error('Error:', error))
-        : null;
+      const buffer = await jimp
+        .read(src)
+        .then(img =>
+          img.resize(width, height, resizingAlgorithm).getBufferAsync(mimeType),
+        )
+        .catch(error => console.error('Error:', error));
 
-      const hash = !shouldIgnore ? createHash(buffer) : null;
+      const hash = createHash(buffer);
       const {
         output: {
           icons: { filename, destination, publicPath: globalPublicPath },
@@ -232,10 +148,10 @@ const icons = {
       };
     });
 
-    return { iconSets, iconsMap, iconsHashMap };
+    return { iconSets, iconsMap };
   },
 
-  async emitIconAssets(iconsMap, iconsHashMap, compilation, options) {
+  async emitIconAssets(iconsMap, compilation, options) {
     const iconSets = getIconSetsFromOptions(options);
 
     await iterateOverIconSets(iconSets, ({ src }, size) => {
@@ -246,12 +162,6 @@ const icons = {
         emitAsset(compilation, filepath, buffer);
       }
     });
-
-    if (options.output.icons.persistentCache) {
-      const hashMapFilepath = `${options.output.icons.destination}/.cache.json`;
-      const hashMapContent = JSON.stringify(iconsHashMap, null, 2);
-      emitAsset(compilation, hashMapFilepath, hashMapContent);
-    }
   },
 
   async getHtmlHeaders(options, iconSets, iconsMap) {

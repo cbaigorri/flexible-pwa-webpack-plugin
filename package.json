@@ -11,8 +11,7 @@
   },
   "dependencies": {
     "jimp": "^0.3.2",
-    "mime": "^2.3.1",
-    "util.promisify": "^1.0.0"
+    "mime": "^2.3.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.56",
