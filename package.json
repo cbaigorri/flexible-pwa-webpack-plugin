@@ -1,11 +1,11 @@
 {
-  "name": "flexible-favicons-webpack-plugin",
+  "name": "flexible-webapp-webpack-plugin",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
     "dev": "babel -w src --out-dir dist",
-    "build": "babel src --out-dir dist",
+    "build": "babel src --out-dir dist --source-maps",
     "clean": "rm -rf tests/*/output && rm -rf dist",
     "test": "npm run clean && npm run build && node tests/index.js"
   },
@@ -16,13 +16,17 @@
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.56",
     "@babel/core": "^7.0.0-beta.56",
+    "@babel/plugin-proposal-class-properties": "^7.0.0-beta.56",
+    "@babel/polyfill": "^7.0.0-beta.56",
     "@babel/preset-env": "^7.0.0-beta.56",
-    "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-eslint": "^8.2.6",
     "eslint": "^5.3.0",
+    "eslint-config-airbnb": "^17.0.0",
     "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-import": "^2.13.0",
     "eslint-plugin-prettier": "^2.6.2",
-    "webpack": "^4.16.4",
+    "prettier": "^1.14.0",
+    "webpack": "^4.16.5",
     "webpack-cli": "^3.1.0"
   },
   "engines": {

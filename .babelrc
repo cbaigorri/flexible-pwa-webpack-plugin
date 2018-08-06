@@ -10,5 +10,6 @@
         "exclude": ["transform-regenerator"]
       }
     ]
-  ]
+  ],
+  "plugins": ["@babel/plugin-proposal-class-properties"]
 }
