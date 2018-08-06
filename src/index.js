@@ -26,7 +26,10 @@ const FlexibleWebappWebpackPlugin = class {
         return;
       }
 
-      this.manifestDictionary = manifest.getDictionary(this.options);
+      this.manifestDictionary = await manifest.getDictionary(
+        this.options,
+        this.iconsMap,
+      );
       if (this.options.output.manifest.injectHtml) {
         this.htmlHeaders.push(...(await manifest.getHtmlHeaders(this.options)));
       }
@@ -56,18 +59,7 @@ const FlexibleWebappWebpackPlugin = class {
         );
       }
 
-      const iconAssets = await icons.emitIconAssets(
-        this.iconsMap,
-        compilation,
-        this.options,
-      );
-
-      const stats = {
-        manifest: this.manifestDictionary,
-        htmlHeaders: this.htmlHeaders,
-        iconAssets,
-      };
-      console.log(stats);
+      await icons.emitIconAssets(this.iconsMap, compilation, this.options);
     });
   }
 };

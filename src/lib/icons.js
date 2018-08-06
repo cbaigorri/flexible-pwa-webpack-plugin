@@ -10,6 +10,8 @@ import {
   flattenArray,
   getCompiledString,
   makeTag,
+  iterateOverIconSets,
+  parseSize,
 } from './helpers';
 
 const supportedMimeTypes = [jimp.MIME_PNG, jimp.MIME_JPEG];
@@ -28,7 +30,10 @@ const getIconSetsFromOptions = options => [
 const getIconsMapFromSets = sets =>
   sets.reduce((acc, set) => {
     const { src, sizes } = set;
-    const sizesObject = arrayToObject(enforceArray(sizes), null);
+    const sizesObject = arrayToObject(
+      enforceArray(sizes).map(size => parseSize(size).wxh),
+      null,
+    );
     acc[src] = Object.assign(acc[src] || {}, sizesObject);
 
     return acc;
@@ -58,29 +63,13 @@ const iteraveOverIconsMap = (iconsMap, asyncCallback) =>
     ),
   );
 
-const iterateOverIconSets = async (iconSets, asyncCallback) =>
-  Promise.all(
-    iconSets.map(async set =>
-      Promise.all(
-        enforceArray(set.sizes).map(size => asyncCallback(set, size)),
-      ),
-    ),
-  );
-
-const parseSize = size => {
-  const width = Number(size);
-  const height = width;
-
-  return { width, height };
-};
-
 const getCompiledFilename = (templateString, userTags) => {
   const extension = path.extname(userTags.src);
   const name = path.basename(userTags.src, extension);
   const tags = {
     ...userTags,
     name,
-    size: `${userTags.width}x${userTags.height}`,
+    size: userTags.wxh,
     ext: extension,
   };
 
@@ -98,11 +87,18 @@ const icons = {
       iconsMap,
       async (src, size, filename, destination) => {
         const mimeType = getMimeTypeFromImage(src);
-        const { width, height } = parseSize(size);
+        const { width, height, wxh } = parseSize(size);
+        const resizingAlgorithm = options.output.icons.pixelPerfect
+          ? jimp.RESIZE_NEAREST_NEIGHBOR
+          : jimp.RESIZE_BILINEAR;
 
         const buffer = await jimp
           .read(src)
-          .then(img => img.resize(width, height).getBufferAsync(mimeType))
+          .then(img =>
+            img
+              .resize(width, height, resizingAlgorithm)
+              .getBufferAsync(mimeType),
+          )
           .catch(error => console.error('Error:', error));
 
         const hash = createHash(buffer);
@@ -116,7 +112,7 @@ const icons = {
           },
         } = options;
         const userFilename = filename || globalFilename;
-        const tags = { src, width, height, hash, mimeType };
+        const tags = { src, width, height, wxh, hash, mimeType };
         const compiledFilename = getCompiledFilename(userFilename, tags);
         const userDestination =
           destination && destination.startsWith('/')
@@ -126,16 +122,22 @@ const icons = {
         const defaultPublicPath = compilation.options.output.publicPath;
         const publicPath = `${globalPublicPath ||
           defaultPublicPath}/${filepath}`.replace(/([^:])\/{2,}/g, '$1/');
+        const key = src;
 
-        iconsMap[src][size] = {
+        iconsMap[key][wxh] = {
+          src,
           mimeType,
           buffer,
           size: buffer.length,
           filepath,
           publicPath,
+          width,
+          height,
         };
       },
     );
+
+    console.log('____', iconsMap);
 
     return iconsMap;
   },
@@ -143,13 +145,14 @@ const icons = {
   async emitIconAssets(iconsMap, compilation, options) {
     const iconSets = getIconSetsFromOptions(options);
 
-    await iterateOverIconSets(iconSets, ({ src }, size) =>
-      emitAsset(
+    await iterateOverIconSets(iconSets, ({ src }, size) => {
+      const { wxh } = parseSize(size);
+      return emitAsset(
         compilation,
-        iconsMap[src][size].filepath,
-        iconsMap[src][size].buffer,
-      ),
-    );
+        iconsMap[src][wxh].filepath,
+        iconsMap[src][wxh].buffer,
+      );
+    });
   },
 
   async getHtmlHeaders(options, iconsMap) {
@@ -194,9 +197,9 @@ const icons = {
       {
         sets: options.favicons,
         name: 'link',
-        getAttributes: ({ size, mimeType, publicPath }) => ({
+        getAttributes: ({ wxh, mimeType, publicPath }) => ({
           rel: 'icon',
-          sizes: size,
+          sizes: wxh,
           type: mimeType,
           href: publicPath,
         }),
@@ -204,18 +207,18 @@ const icons = {
       {
         sets: options.safari.icons,
         name: 'link',
-        getAttributes: ({ size, publicPath }) => ({
+        getAttributes: ({ wxh, publicPath }) => ({
           rel: 'apple-touch-icon',
-          sizes: size,
+          sizes: wxh,
           href: publicPath,
         }),
       },
       {
         sets: [options.safari.startupImage],
         name: 'link',
-        getAttributes: ({ size, publicPath }) => ({
+        getAttributes: ({ wxh, publicPath }) => ({
           rel: 'apple-touch-startup-image',
-          sizes: size,
+          sizes: wxh,
           href: publicPath,
         }),
       },
@@ -235,12 +238,13 @@ const icons = {
         await Promise.all(
           linkTagTemplates.map(({ sets, name, getAttributes }) =>
             iterateOverIconSets(sets, ({ src, color }, size) => {
-              const { mimeType, publicPath } = iconsMap[src][size];
+              const { wxh } = parseSize(size);
+              const { mimeType, publicPath } = iconsMap[src][wxh];
               const compiledHeader = makeTag(
                 name,
                 getAttributes({
                   color,
-                  size: `${size}x${size}`,
+                  wxh,
                   mimeType,
                   publicPath,
                 }),
