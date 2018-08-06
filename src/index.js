@@ -35,6 +35,7 @@ const FlexibleWebappWebpackPlugin = class {
 
       this.manifestDictionary = await manifest.getDictionary(
         this.options,
+        this.iconSets,
         this.iconsMap,
       );
       if (this.options.output.manifest.injectHtml) {

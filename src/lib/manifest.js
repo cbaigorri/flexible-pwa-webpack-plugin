@@ -25,7 +25,7 @@ const members = [
   'scope',
 ];
 
-const buildDictionary = async (manifestOptions, keys, iconsMap) => {
+const buildDictionary = async (manifestOptions, keys, iconSets, iconsMap) => {
   const dictionary = {
     ...keys.reduce((acc, key) => {
       const value = manifestOptions[toCamel(key)];
@@ -37,7 +37,7 @@ const buildDictionary = async (manifestOptions, keys, iconsMap) => {
     }, {}),
     icons: flattenArray(
       await iterateOverIconSets(
-        manifestOptions.icons,
+        iconSets.manifestIcons,
         async ({ src }, size) => {
           const { wxh } = parseSize(size);
           const { publicPath, mimeType } = iconsMap[src][wxh];
@@ -53,9 +53,6 @@ const buildDictionary = async (manifestOptions, keys, iconsMap) => {
     ),
   };
 
-  // const { icons: manifestIcons } = manifestOptions;
-  //  = ;
-
   return dictionary;
 };
 
@@ -66,8 +63,13 @@ const getStringFromDictionary = dictionary => {
 };
 
 const manifest = {
-  async getDictionary(options, iconsMap) {
-    const object = await buildDictionary(options.manifest, members, iconsMap);
+  async getDictionary(options, iconSets, iconsMap) {
+    const object = await buildDictionary(
+      options.manifest,
+      members,
+      iconSets,
+      iconsMap,
+    );
 
     return object;
   },

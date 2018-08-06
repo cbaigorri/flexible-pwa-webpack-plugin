@@ -33,18 +33,22 @@ const getSanitizeIconSet = (set, options) => {
 
 const getIconSetsFromOptions = options => {
   const iconSets = {
-    safariMaskIcon: [options.safari.maskIcon],
-    safariStartupImage: [options.safari.startupImage],
+    safariMaskIcon: options.safari.maskIcon ? [options.safari.maskIcon] : null,
+    safariStartupImage: options.safari.startupImage
+      ? [options.safari.startupImage]
+      : null,
     safariIcons: options.safari.icons,
     manifestIcons: options.manifest.icons,
     favicons: options.favicons,
   };
 
-  const sanitizedIconSets = Object.keys(iconSets).reduce((acc, name) => {
-    acc[name] = iconSets[name].map(set => getSanitizeIconSet(set, options));
+  const sanitizedIconSets = Object.keys(iconSets)
+    .filter(name => !!iconSets[name] && iconSets[name].length)
+    .reduce((acc, name) => {
+      acc[name] = iconSets[name].map(set => getSanitizeIconSet(set, options));
 
-    return acc;
-  }, {});
+      return acc;
+    }, {});
 
   return sanitizedIconSets;
 };
@@ -331,23 +335,25 @@ const icons = {
     headers.push(
       ...flattenArray(
         await Promise.all(
-          linkTagTemplates.map(({ sets, name, getAttributes }) =>
-            iterateOverIconSets(sets, ({ src, color }, size) => {
-              const { wxh } = parseSize(size);
-              const { mimeType, publicPath } = iconsMap[src][wxh];
-              const compiledHeader = makeTag(
-                name,
-                getAttributes({
-                  color,
-                  wxh,
-                  mimeType,
-                  publicPath,
-                }),
-              );
+          linkTagTemplates
+            .filter(template => !!template.sets && template.sets.length)
+            .map(({ sets, name, getAttributes }) =>
+              iterateOverIconSets(sets, ({ src, color }, size) => {
+                const { wxh } = parseSize(size);
+                const { mimeType, publicPath } = iconsMap[src][wxh];
+                const compiledHeader = makeTag(
+                  name,
+                  getAttributes({
+                    color,
+                    wxh,
+                    mimeType,
+                    publicPath,
+                  }),
+                );
 
-              return compiledHeader;
-            }),
-          ),
+                return compiledHeader;
+              }),
+            ),
         ),
       ),
     );
