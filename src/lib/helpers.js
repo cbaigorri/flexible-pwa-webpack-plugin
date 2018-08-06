@@ -1,4 +1,4 @@
-import { isArray, isNumber } from 'util';
+import { isArray } from 'util';
 import crypto from 'crypto';
 
 export const toCamel = string =>
@@ -52,10 +52,8 @@ export const makeTag = (name, attributes) =>
 
 export const iterateOverIconSets = async (iconSets, asyncCallback) =>
   Promise.all(
-    iconSets.map(async set =>
-      Promise.all(
-        enforceArray(set.sizes).map(size => asyncCallback(set, size)),
-      ),
+    flattenArray(Object.values(iconSets)).map(async set =>
+      Promise.all(set.sizes.map(size => asyncCallback(set, size))),
     ),
   );
 

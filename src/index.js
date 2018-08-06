@@ -12,6 +12,7 @@ const FlexibleWebappWebpackPlugin = class {
     this.manifestDictionary = null;
     this.htmlHeaders = [];
     this.iconsMap = {};
+    this.iconsHashMap = {};
   }
 
   apply(compiler) {
@@ -19,7 +20,13 @@ const FlexibleWebappWebpackPlugin = class {
     const { pluginKey } = FlexibleWebappWebpackPlugin;
 
     hooks.make.tapPromise(pluginKey, async compilation => {
-      this.iconsMap = await icons.generateIconsMap(this.options, compilation);
+      const { iconSets, iconsMap, iconsHashMap } = await icons.generateIconsMap(
+        this.options,
+        compilation,
+      );
+      this.iconSets = iconSets;
+      this.iconsMap = iconsMap;
+      this.iconsHashMap = iconsHashMap;
 
       const { htmlWebpackPluginBeforeHtmlProcessing } = compilation.hooks;
       if (!htmlWebpackPluginBeforeHtmlProcessing) {
@@ -36,7 +43,11 @@ const FlexibleWebappWebpackPlugin = class {
 
       if (this.options.output.icons.injectHtml) {
         this.htmlHeaders.push(
-          ...(await icons.getHtmlHeaders(this.options, this.iconsMap)),
+          ...(await icons.getHtmlHeaders(
+            this.options,
+            this.iconSets,
+            this.iconsMap,
+          )),
         );
       }
 
@@ -59,7 +70,12 @@ const FlexibleWebappWebpackPlugin = class {
         );
       }
 
-      await icons.emitIconAssets(this.iconsMap, compilation, this.options);
+      await icons.emitIconAssets(
+        this.iconsMap,
+        this.iconsHashMap,
+        compilation,
+        this.options,
+      );
     });
   }
 };

@@ -2,6 +2,7 @@ import jimp from 'jimp';
 import mime from 'mime';
 import fs from 'fs';
 import path from 'path';
+import promisify from 'util.promisify';
 
 import {
   enforceArray,
@@ -19,19 +20,39 @@ const supportedMimeTypes = [jimp.MIME_PNG, jimp.MIME_JPEG];
 const arrayToObject = (array, defaultValue) =>
   Object.assign(...array.map(d => ({ [d]: defaultValue })));
 
-const getIconSetsFromOptions = options => [
-  options.safari.maskIcon,
-  options.safari.startupImage,
-  ...options.manifest.icons,
-  ...options.favicons,
-  ...options.safari.icons,
-];
+const getSanitizeIconSet = (set, options) => {
+  const defaultSrc = options.output.icons.src;
+  const sanitizedIconSet = {
+    ...set,
+    src: set.src || defaultSrc,
+    sizes: enforceArray(set.sizes),
+  };
+
+  return sanitizedIconSet;
+};
+
+const getIconSetsFromOptions = options => {
+  const iconSets = {
+    safariMaskIcon: [options.safari.maskIcon],
+    safariStartupImage: [options.safari.startupImage],
+    safariIcons: options.safari.icons,
+    manifestIcons: options.manifest.icons,
+    favicons: options.favicons,
+  };
+
+  const sanitizedIconSets = Object.keys(iconSets).reduce((acc, name) => {
+    acc[name] = iconSets[name].map(set => getSanitizeIconSet(set, options));
+
+    return acc;
+  }, {});
+
+  return sanitizedIconSets;
+};
 
 const getIconsMapFromSets = sets =>
-  sets.reduce((acc, set) => {
-    const { src, sizes } = set;
+  flattenArray(Object.values(sets)).reduce((acc, { src, sizes }) => {
     const sizesObject = arrayToObject(
-      enforceArray(sizes).map(size => parseSize(size).wxh),
+      sizes.map(size => parseSize(size).wxh),
       null,
     );
     acc[src] = Object.assign(acc[src] || {}, sizesObject);
@@ -54,7 +75,7 @@ const getMimeTypeFromImage = src => {
   return mimeType;
 };
 
-const iteraveOverIconsMap = (iconsMap, asyncCallback) =>
+const iterateOverIconsMap = (iconsMap, asyncCallback) =>
   Promise.all(
     Object.keys(iconsMap).map(async src =>
       Promise.all(
@@ -78,84 +99,158 @@ const getCompiledFilename = (templateString, userTags) => {
   return compiled;
 };
 
+const genHashMapFromIconsMap = async iconsMap =>
+  flattenArray(
+    await Promise.all(
+      Object.keys(iconsMap).map(async src => {
+        const buffer = await promisify(fs.readFile)(src);
+        const hash = createHash(buffer);
+        const item = {
+          src,
+          hash,
+        };
+
+        return item;
+      }),
+    ),
+  ).reduce((acc, { src, hash }) => {
+    acc[src] = hash;
+
+    return acc;
+  }, {});
+
+const readExistingFile = (filepath, encoding) => {
+  try {
+    const content = fs.readFileSync(filepath, encoding);
+
+    return content;
+  } catch (error) {
+    return null;
+  }
+};
+
+const readExistingHashMap = (options, compilation) => {
+  const { outputPath } = compilation.compiler;
+  const filepath = path.join(
+    outputPath,
+    options.output.icons.destination,
+    '.cache.json',
+  );
+  const iconsHashMap = readExistingFile(filepath, 'utf-8');
+  if (!iconsHashMap) {
+    return null;
+  }
+
+  const parsedIconsHashMap = JSON.parse(iconsHashMap);
+
+  return parsedIconsHashMap;
+};
+
+const isAlreadyCached = (options, compilation, existingIconsHashMap, src) => {
+  if (!options.output.icons.persistentCache) {
+    return false;
+  }
+
+  const { context } = compilation.compiler;
+  const srcFilepath = path.join(context, src);
+  const existingImage = readExistingFile(srcFilepath);
+
+  if (existingImage) {
+    const srcExistingHash = existingIconsHashMap[src];
+    const srcHash = createHash(existingImage);
+
+    if (srcExistingHash === srcHash) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
 const icons = {
   async generateIconsMap(options, compilation) {
     const iconSets = getIconSetsFromOptions(options);
     const iconsMap = getIconsMapFromSets(iconSets);
+    const iconsHashMap = await genHashMapFromIconsMap(iconsMap);
 
-    await iteraveOverIconsMap(
-      iconsMap,
-      async (src, size, filename, destination) => {
-        const mimeType = getMimeTypeFromImage(src);
-        const { width, height, wxh } = parseSize(size);
-        const resizingAlgorithm = options.output.icons.pixelPerfect
-          ? jimp.RESIZE_NEAREST_NEIGHBOR
-          : jimp.RESIZE_BILINEAR;
+    const existingIconsHashMap =
+      readExistingHashMap(options, compilation) || {};
 
-        const buffer = await jimp
-          .read(src)
-          .then(img =>
-            img
-              .resize(width, height, resizingAlgorithm)
-              .getBufferAsync(mimeType),
-          )
-          .catch(error => console.error('Error:', error));
+    await iterateOverIconsMap(iconsMap, async (src, size) => {
+      const shouldIgnore = isAlreadyCached(
+        options,
+        compilation,
+        existingIconsHashMap,
+        src,
+      );
 
-        const hash = createHash(buffer);
-        const {
-          output: {
-            icons: {
-              filename: globalFilename,
-              destination: globalDestination,
-              publicPath: globalPublicPath,
-            },
-          },
-        } = options;
-        const userFilename = filename || globalFilename;
-        const tags = { src, width, height, wxh, hash, mimeType };
-        const compiledFilename = getCompiledFilename(userFilename, tags);
-        const userDestination =
-          destination && destination.startsWith('/')
-            ? destination
-            : path.join(globalDestination, destination || '');
-        const filepath = path.join(userDestination, compiledFilename);
-        const defaultPublicPath = compilation.options.output.publicPath;
-        const publicPath = `${globalPublicPath ||
-          defaultPublicPath}/${filepath}`.replace(/([^:])\/{2,}/g, '$1/');
-        const key = src;
+      const mimeType = getMimeTypeFromImage(src);
+      const { width, height, wxh } = parseSize(size);
+      const resizingAlgorithm = options.output.icons.pixelArt
+        ? jimp.RESIZE_NEAREST_NEIGHBOR
+        : null;
 
-        iconsMap[key][wxh] = {
-          src,
-          mimeType,
-          buffer,
-          size: buffer.length,
-          filepath,
-          publicPath,
-          width,
-          height,
-        };
-      },
-    );
+      const buffer = !shouldIgnore
+        ? await jimp
+            .read(src)
+            .then(img =>
+              img
+                .resize(width, height, resizingAlgorithm)
+                .getBufferAsync(mimeType),
+            )
+            .catch(error => console.error('Error:', error))
+        : null;
 
-    console.log('____', iconsMap);
+      const hash = !shouldIgnore ? createHash(buffer) : null;
+      const {
+        output: {
+          icons: { filename, destination, publicPath: globalPublicPath },
+        },
+      } = options;
+      const tags = { src, width, height, wxh, hash, mimeType };
+      const compiledFilename = getCompiledFilename(filename, tags);
+      const filepath = path.join(destination, compiledFilename);
+      const defaultPublicPath = compilation.options.output.publicPath;
+      const publicPath = `${globalPublicPath ||
+        defaultPublicPath}/${filepath}`.replace(/([^:])\/{2,}/g, '$1/');
+      const key = src;
 
-    return iconsMap;
+      iconsMap[key][wxh] = {
+        src,
+        mimeType,
+        buffer,
+        size: buffer ? buffer.length : 0,
+        filepath,
+        publicPath,
+        width,
+        height,
+        hash,
+      };
+    });
+
+    return { iconSets, iconsMap, iconsHashMap };
   },
 
-  async emitIconAssets(iconsMap, compilation, options) {
+  async emitIconAssets(iconsMap, iconsHashMap, compilation, options) {
     const iconSets = getIconSetsFromOptions(options);
 
     await iterateOverIconSets(iconSets, ({ src }, size) => {
       const { wxh } = parseSize(size);
-      return emitAsset(
-        compilation,
-        iconsMap[src][wxh].filepath,
-        iconsMap[src][wxh].buffer,
-      );
+      const { filepath, buffer } = iconsMap[src][wxh];
+
+      if (buffer) {
+        emitAsset(compilation, filepath, buffer);
+      }
     });
+
+    if (options.output.icons.persistentCache) {
+      const hashMapFilepath = `${options.output.icons.destination}/.cache.json`;
+      const hashMapContent = JSON.stringify(iconsHashMap, null, 2);
+      emitAsset(compilation, hashMapFilepath, hashMapContent);
+    }
   },
 
-  async getHtmlHeaders(options, iconsMap) {
+  async getHtmlHeaders(options, iconSets, iconsMap) {
     const { webAppCapable, webAppTitle, webAppStatusBarStyle } = options.safari;
 
     const metaTagTemplates = [
@@ -195,7 +290,7 @@ const icons = {
 
     const linkTagTemplates = [
       {
-        sets: options.favicons,
+        sets: iconSets.favicons,
         name: 'link',
         getAttributes: ({ wxh, mimeType, publicPath }) => ({
           rel: 'icon',
@@ -205,7 +300,7 @@ const icons = {
         }),
       },
       {
-        sets: options.safari.icons,
+        sets: iconSets.safariIcons,
         name: 'link',
         getAttributes: ({ wxh, publicPath }) => ({
           rel: 'apple-touch-icon',
@@ -214,7 +309,7 @@ const icons = {
         }),
       },
       {
-        sets: [options.safari.startupImage],
+        sets: iconSets.safariStartupImage,
         name: 'link',
         getAttributes: ({ wxh, publicPath }) => ({
           rel: 'apple-touch-startup-image',
@@ -223,7 +318,7 @@ const icons = {
         }),
       },
       {
-        sets: [options.safari.maskIcon],
+        sets: iconSets.safariMaskIcon,
         name: 'link',
         getAttributes: ({ publicPath, color }) => ({
           rel: 'mask-icon',

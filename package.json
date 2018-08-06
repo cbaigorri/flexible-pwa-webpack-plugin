@@ -4,14 +4,15 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev": "babel -w src --out-dir dist",
-    "build": "babel src --out-dir dist --source-maps",
+    "dev": "babel -w src --out-dir dist --source-maps",
+    "build": "babel src --out-dir dist",
     "clean": "rm -rf tests/*/output && rm -rf dist",
     "test": "npm run clean && npm run build && node tests/index.js"
   },
   "dependencies": {
     "jimp": "^0.3.2",
-    "mime": "^2.3.1"
+    "mime": "^2.3.1",
+    "util.promisify": "^1.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.56",
