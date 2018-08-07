@@ -26,22 +26,16 @@ export const emitAsset = async (compilation, filename, content) => {
   /* eslint-enanle no-param-reassign */
 };
 
-export const createHash = data =>
+export const createHash = buffer =>
   crypto
     .createHash('md5')
-    .update(data)
+    .update(buffer)
     .digest('hex');
 
 export const enforceArray = values => (isArray(values) ? values : [values]);
 
 export const flattenArray = list =>
   list.reduce((a, b) => a.concat(Array.isArray(b) ? flattenArray(b) : b), []);
-
-export const getCompiledString = (templateString, tags) =>
-  Object.keys(tags).reduce(
-    (acc, key) => acc.replace(`[${key}]`, tags[key]),
-    templateString,
-  );
 
 export const makeTag = (name, attributes) =>
   [
@@ -50,18 +44,4 @@ export const makeTag = (name, attributes) =>
     '/>',
   ].join(' ');
 
-export const iterateOverIconSets = async (iconSets, asyncCallback) =>
-  Promise.all(
-    flattenArray(Object.values(iconSets)).map(async set =>
-      Promise.all(set.sizes.map(size => asyncCallback(set, size))),
-    ),
-  );
-
-export const parseSize = size => {
-  const [width, height] = Number(size)
-    ? [size, size]
-    : size.split('x').map(Number);
-  const parsedSize = { width, height, wxh: `${width}x${height}` };
-
-  return parsedSize;
-};
+export const sanitizeUrl = url => url.replace(/([^:]|^)\/{2,}/g, '$1/');

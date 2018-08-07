@@ -1,13 +1,6 @@
 import { isNull, isUndefined } from 'util';
 
-import {
-  toCamel,
-  emitAsset,
-  makeTag,
-  iterateOverIconSets,
-  flattenArray,
-  parseSize,
-} from './helpers';
+import { toCamel, emitAsset, makeTag } from './helpers';
 
 const members = [
   'name',
@@ -25,7 +18,20 @@ const members = [
   'scope',
 ];
 
-const buildDictionary = async (manifestOptions, keys, iconSets, iconsMap) => {
+const buildDictionary = async (manifestOptions, keys, iconsList, assetsMap) => {
+  const icons = iconsList
+    .filter(({ set }) => set === 'manifestIcons')
+    .map(({ cacheKey, size, mimeType }) => {
+      const { publicPath } = assetsMap[cacheKey];
+      const iconInfo = {
+        src: publicPath,
+        sizes: size,
+        type: mimeType,
+      };
+
+      return iconInfo;
+    });
+
   const dictionary = {
     ...keys.reduce((acc, key) => {
       const value = manifestOptions[toCamel(key)];
@@ -35,22 +41,7 @@ const buildDictionary = async (manifestOptions, keys, iconSets, iconsMap) => {
 
       return acc;
     }, {}),
-    icons: flattenArray(
-      await iterateOverIconSets(
-        iconSets.manifestIcons,
-        async ({ src }, size) => {
-          const { wxh } = parseSize(size);
-          const { publicPath, mimeType } = iconsMap[src][wxh];
-          const icon = {
-            src: publicPath,
-            sizes: `${size}x${size}`,
-            type: mimeType,
-          };
-
-          return icon;
-        },
-      ),
-    ),
+    icons,
   };
 
   return dictionary;
@@ -63,12 +54,12 @@ const getStringFromDictionary = dictionary => {
 };
 
 const manifest = {
-  async getDictionary(options, iconSets, iconsMap) {
+  async getDictionary(options, iconsList, assetsMap) {
     const object = await buildDictionary(
       options.manifest,
       members,
-      iconSets,
-      iconsMap,
+      iconsList,
+      assetsMap,
     );
 
     return object;
