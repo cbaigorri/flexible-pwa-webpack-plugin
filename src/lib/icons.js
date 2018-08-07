@@ -238,7 +238,7 @@ const icons = {
         name: 'meta',
         attributes: {
           name: 'apple-mobile-web-app-status-bar-style',
-          content: 'webAppStatusBarStyle',
+          content: webAppStatusBarStyle,
         },
       },
     ];
