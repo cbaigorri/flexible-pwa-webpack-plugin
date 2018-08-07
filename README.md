@@ -77,7 +77,7 @@ plugins: [
 
 In combination with [html-webpack-plugin](https://github.com/ampedandwired/html-webpack-plugin) it will also inject the necessary html for you:
 
-> **Note**: `html-webpack-plugin` _must_ come before `webapp-webpack-plugin` in the plugins array.
+> **Note**: `html-webpack-plugin` _must_ come before `flexible-pwa-webpack-plugin` in the plugins array.
 
 ```html
 <link rel="manifest" href="/manifest.json" />
