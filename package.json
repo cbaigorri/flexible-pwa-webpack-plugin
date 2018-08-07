@@ -1,6 +1,6 @@
 {
   "name": "flexible-webapp-webpack-plugin",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "index.js",
   "license": "MIT",
   "author": "Olivier Pascal <olivier.pascal@gmail.com>",
@@ -14,6 +14,10 @@
     "jimp": "^0.3.2",
     "mime": "^2.3.1",
     "to-ico": "^1.1.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/olivierpascal/flexible-webapp-webpack-plugin.git"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.56",
