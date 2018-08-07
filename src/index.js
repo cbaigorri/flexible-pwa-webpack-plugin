@@ -4,8 +4,8 @@ import manifest from './lib/manifest';
 import icons from './lib/icons';
 import { injectHeadersToHtml } from './lib/helpers';
 
-const FlexibleWebappWebpackPlugin = class {
-  static pluginKey = 'flexible-webapp-webpack-plugin';
+const FlexiblePwaWebpackPlugin = class {
+  static pluginKey = 'flexible-pwa-webpack-plugin';
 
   constructor(options = {}) {
     this.options = options;
@@ -17,7 +17,7 @@ const FlexibleWebappWebpackPlugin = class {
 
   apply(compiler) {
     const { hooks } = compiler;
-    const { pluginKey } = FlexibleWebappWebpackPlugin;
+    const { pluginKey } = FlexiblePwaWebpackPlugin;
 
     hooks.make.tapPromise(pluginKey, async compilation => {
       const { iconsList, assetsMap } = await icons.generateAssets(
@@ -75,4 +75,4 @@ const FlexibleWebappWebpackPlugin = class {
   }
 };
 
-module.exports = FlexibleWebappWebpackPlugin;
+module.exports = FlexiblePwaWebpackPlugin;

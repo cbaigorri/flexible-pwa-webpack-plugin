@@ -1,6 +1,6 @@
 {
-  "name": "flexible-webapp-webpack-plugin",
-  "version": "0.1.1",
+  "name": "flexible-pwa-webpack-plugin",
+  "version": "0.0.1",
   "main": "index.js",
   "license": "MIT",
   "author": "Olivier Pascal <olivier.pascal@gmail.com>",
@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/olivierpascal/flexible-webapp-webpack-plugin.git"
+    "url": "https://github.com/olivierpascal/flexible-pwa-webpack-plugin.git"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.56",
