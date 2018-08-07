@@ -30,7 +30,8 @@ plugins: [
       icons: {
         src: path.join(__dirname, 'assets', 'logo.png'),
         destination: path.join('img', 'app-icons'),
-        filename: ({ size, extension, /* name, width, height */ }) => `icon-${size}${extension}`,
+        filename: ({ size, extension, /* name, width, height, hash */ })
+          => `icon-${size}${extension}`,
         publicPath: null,
         pixelArt: false,
         injectHtml: true,
