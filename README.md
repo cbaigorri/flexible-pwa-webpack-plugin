@@ -1,4 +1,4 @@
-# Flexible Web App Webpack Plugin
+# Flexible PWA Webpack Plugin
 
 [![NPM version](https:/img.shields.io/npm/v/favicons.svg)](https://www.npmjs.org/package/flexible-pwa-webpack-plugin)
 
