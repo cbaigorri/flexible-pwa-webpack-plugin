@@ -15,7 +15,7 @@ $ npm install flexible-pwa-webpack-plugin
 Add the plugin to your webpack config as follows:
 
 ```javascript
-const FlexiblePwaWebpackPlugin = require('flexible-pwa-webpack-plugin')
+const FlexiblePwaWebpackPlugin = require('flexible-pwa-webpack-plugin');
 
 ...
 
