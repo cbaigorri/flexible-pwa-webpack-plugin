@@ -1,6 +1,6 @@
 {
   "name": "flexible-pwa-webpack-plugin",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "index.js",
   "license": "MIT",
   "author": "Olivier Pascal <olivier.pascal@gmail.com>",
