@@ -1,8 +1,9 @@
 {
   "name": "flexible-webapp-webpack-plugin",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "main": "index.js",
   "license": "MIT",
+  "author": "Olivier Pascal <olivier.pascal@gmail.com>",
   "scripts": {
     "dev": "babel -w src --out-dir dist --source-maps",
     "build": "babel src --out-dir dist",
