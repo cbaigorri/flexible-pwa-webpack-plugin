@@ -1,6 +1,6 @@
 # Flexible PWA Webpack Plugin
 
-[![NPM version](https:/img.shields.io/npm/v/favicons.svg)](https://www.npmjs.org/package/flexible-pwa-webpack-plugin)
+[![NPM version](https://img.shields.io/npm/v/flexible-pwa-webpack-plugin.svg)](https://www.npmjs.com/package/flexible-pwa-webpack-plugin) [![Dependency status](https://david-dm.org/olivierpascal/flexible-pwa-webpack-plugin.svg)](https://david-dm.org/olivierpascal/flexible-pwa-webpack-plugin)
 
 A flexible webpack plugin for generating favicons, manifest and injecting HTML header tags. If you want full control over what is generated and where, go for it. Only 3 dependencies. Requires Node 4+.
 
@@ -82,6 +82,7 @@ In combination with [html-webpack-plugin](https://github.com/ampedandwired/html-
 
 ```html
 <link rel="manifest" href="/manifest.json" />
+
 <meta name="application-name" content="PWA" />
 <meta name="theme-color" content="#ffffff" />
 <meta name="msapplication-starturl" content="/?utm_source=homescreen" />
@@ -89,6 +90,7 @@ In combination with [html-webpack-plugin](https://github.com/ampedandwired/html-
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-title" content="PWA" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
 <link rel="shortcut icon" sizes="32x32" type="image/x-icon" href="/favicon.ico" />
 <link rel="shortcut icon" sizes="76x76" type="image/x-icon" href="https://my-cdn.com/img/app-icons/icon-180x180.ico" />
 <link rel="icon" sizes="192x192" type="image/png" href="https://my-cdn.com/img/app-icons/icon-76x76.png" />
