@@ -152,8 +152,8 @@ It will also create a `manifest.json` for you:
 
 ## TODO
 
-[ ] Tests
-[ ] Working examples
+- [ ] Tests
+- [ ] Working examples
 
 ## License
 
