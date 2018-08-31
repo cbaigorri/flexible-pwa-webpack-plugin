@@ -1,14 +1,15 @@
 {
   "name": "flexible-pwa-webpack-plugin",
-  "version": "0.0.3",
-  "main": "src/index.js",
+  "version": "0.0.4",
+  "main": "index.js",
   "license": "MIT",
   "author": "Olivier Pascal <olivier.pascal@gmail.com>",
   "scripts": {
     "dev": "babel -w src --out-dir dist --source-maps",
-    "build": "babel src --out-dir dist",
+    "build": "babel src --out-dir dist --copy-files",
     "clean": "rm -rf tests/*/output && rm -rf dist",
-    "test": "npm run clean && npm run build && node tests/index.js"
+    "test": "npm run clean && npm run build && node tests/index.js",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "jimp": "^0.3.11",
