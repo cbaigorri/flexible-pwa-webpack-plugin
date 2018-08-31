@@ -150,6 +150,11 @@ It will also create a `manifest.json` for you:
 }
 ```
 
+## TODO
+
+[ ] Tests
+[ ] Working examples
+
 ## License
 
 Feel free to push your code if you agree with publishing under the [MIT](https://github.com/olivierpascal/flexible-pwa-webpack-plugin/blob/master/LICENSE) license.
