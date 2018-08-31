@@ -27,16 +27,17 @@ const FlexiblePwaWebpackPlugin = class {
       this.iconsList = iconsList;
       this.assetsMap = assetsMap;
 
-      const { htmlWebpackPluginBeforeHtmlProcessing } = compilation.hooks;
-      if (!htmlWebpackPluginBeforeHtmlProcessing) {
-        return;
-      }
-
       this.manifestDictionary = await manifest.getDictionary(
         this.options,
         this.iconsList,
         this.assetsMap,
       );
+
+      const { htmlWebpackPluginBeforeHtmlProcessing } = compilation.hooks;
+      if (!htmlWebpackPluginBeforeHtmlProcessing) {
+        return;
+      }
+
       if (this.options.output.manifest.injectHtml) {
         this.htmlHeaders.push(...(await manifest.getHtmlHeaders(this.options)));
       }
@@ -52,12 +53,11 @@ const FlexiblePwaWebpackPlugin = class {
       }
 
       htmlWebpackPluginBeforeHtmlProcessing.tap(pluginKey, htmlPluginData => {
-        /* eslint-disable no-param-reassign */
+        // eslint-disable-next-line no-param-reassign
         htmlPluginData.html = injectHeadersToHtml(
           htmlPluginData.html,
           this.htmlHeaders,
         );
-        /* eslint-enable no-param-reassign */
       });
     });
 

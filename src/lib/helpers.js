@@ -18,12 +18,11 @@ export const injectHeadersToHtml = (html, headers, indentSize = 2) => {
 };
 
 export const emitAsset = async (compilation, filename, content) => {
-  /* eslint-disable no-param-reassign */
+  // eslint-disable-next-line no-param-reassign
   compilation.assets[filename] = {
     source: () => content,
     size: () => content.length,
   };
-  /* eslint-enanle no-param-reassign */
 };
 
 export const createHash = buffer =>
