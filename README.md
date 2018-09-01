@@ -7,7 +7,13 @@ A flexible webpack plugin for generating favicons, manifest and injecting HTML h
 ## Installation
 
 ```shell
-$ npm install flexible-pwa-webpack-plugin
+$ npm install flexible-pwa-webpack-plugin --save
+```
+
+or
+
+```shell
+$ yarn add flexible-pwa-webpack-plugin
 ```
 
 ## Basic Usage
