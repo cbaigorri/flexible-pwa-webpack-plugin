@@ -188,6 +188,7 @@ It will also create a `manifest.json` for you:
 - [ ] Typescript support (`index.d.ts`)
 - [ ] Emit webpack hooks (`flexiblePwaWebpackPluginBeforeEmit`)
 - [ ] Caching to reduce build time
+- [ ] Drop `core-js` dependency
 
 ## License
 
