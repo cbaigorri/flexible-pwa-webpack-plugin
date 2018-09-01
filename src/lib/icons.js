@@ -156,6 +156,7 @@ const getAssetsMapFromIconsList = async (iconsList, options) => {
               .resize(width, height, resizingAlgorithm)
               .getBufferAsync(outputMimetype),
           )
+          // eslint-disable-next-line no-console
           .catch(error => console.error('Error:', error));
 
         const icoBuffer = shouldOutputIco ? await toIco([buffer]) : null;
