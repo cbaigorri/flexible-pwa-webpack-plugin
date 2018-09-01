@@ -4,18 +4,6 @@
 
 A flexible webpack plugin for generating favicons, manifest and injecting HTML header tags. If you want full control over what is generated and where, go for it. Only 4 dependencies. Requires Node 4+.
 
-## Installation
-
-```shell
-$ npm install flexible-pwa-webpack-plugin --save
-```
-
-or
-
-```shell
-$ yarn add flexible-pwa-webpack-plugin
-```
-
 ## Features
 
 ✔ Auto icon resizing
@@ -35,6 +23,18 @@ $ yarn add flexible-pwa-webpack-plugin
 ✔ Auto manifest injection in HTML
 
 ✔ ES6+ ready
+
+## Installation
+
+```shell
+$ npm install flexible-pwa-webpack-plugin --save
+```
+
+or
+
+```shell
+$ yarn add flexible-pwa-webpack-plugin
+```
 
 ## Usage
 
