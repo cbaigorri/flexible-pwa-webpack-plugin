@@ -24,6 +24,18 @@
     "mime": "^2.3.1",
     "to-ico": "^1.1.5"
   },
+  "keywords": [
+    "manifest",
+    "manifest.json",
+    "icons",
+    "resize",
+    "favicon",
+    "webpack",
+    "inject",
+    "pwa",
+    "progressive",
+    "webapp"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/olivierpascal/flexible-pwa-webpack-plugin.git"
