@@ -4,7 +4,7 @@
   "description": "A flexible webpack plugin for generating favicons, manifest.json and injecting HTML header tags.",
   "main": "index.js",
   "license": "MIT",
-  "author": "Olivier Pascal <olivier.pascal@gmail.com>",
+  "author": "Olivier Pascal <olivier.pascal@gmail.com> (https://github.com/olivierpascal)",
   "scripts": {
     "dev": "babel -w src --out-dir dist --source-maps",
     "build": "babel src --out-dir dist --copy-files",
@@ -43,6 +43,10 @@
     "type": "git",
     "url": "https://github.com/olivierpascal/flexible-pwa-webpack-plugin.git"
   },
+  "bugs": {
+    "url": "https://github.com/olivierpascal/flexible-pwa-webpack-plugin/issues"
+  },
+  "homepage": "https://github.com/olivierpascal/flexible-pwa-webpack-plugin",
   "devDependencies": {
     "@babel/cli": "^7.0.0",
     "@babel/core": "^7.0.0",
