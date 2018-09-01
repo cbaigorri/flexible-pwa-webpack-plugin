@@ -186,6 +186,7 @@ It will also create a `manifest.json` for you:
 - [ ] Caching
 - [ ] Tests
 - [ ] Working examples
+- [ ] Add types (`index.d.ts`)
 - [ ] Emit Webpack hooks (`flexiblePwaWebpackPluginBeforeEmit`)
 
 ## License
