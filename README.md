@@ -21,7 +21,9 @@ $ yarn add flexible-pwa-webpack-plugin
 ✔ Auto icon resizing
 
 > You are in control of the source image (example: can be a different image source for the shortcut icon and the home screen icon).
+
 > PNG, JPG and ICO input/output formats supported.
+
 > Support pixel-perfect resizing for pixel art icons.
 
 ✔ CDN and cache friendly
