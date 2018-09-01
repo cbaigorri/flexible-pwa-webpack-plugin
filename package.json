@@ -34,7 +34,8 @@
     "inject",
     "pwa",
     "progressive",
-    "webapp"
+    "webapp",
+    "es6"
   ],
   "repository": {
     "type": "git",
