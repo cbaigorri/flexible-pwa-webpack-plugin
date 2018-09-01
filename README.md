@@ -2,7 +2,7 @@
 
 [![NPM version](https://img.shields.io/npm/v/flexible-pwa-webpack-plugin.svg)](https://www.npmjs.com/package/flexible-pwa-webpack-plugin) [![Dependency status](https://david-dm.org/olivierpascal/flexible-pwa-webpack-plugin.svg)](https://david-dm.org/olivierpascal/flexible-pwa-webpack-plugin) [![License](https://img.shields.io/npm/l/flexible-pwa-webpack-plugin.svg)](https://github.com/olivierpascal/flexible-pwa-webpack-plugin/blob/master/LICENSE)
 
-A flexible webpack plugin for generating favicons, manifest.json and injecting HTML header tags. If you want full control over what is generated and where, go for it. Only 4 dependencies. Requires Node 4+.
+A flexible webpack plugin for generating favicons, `manifest.json` and injecting HTML header tags. If you want full control over what is generated and where, go for it. Only 4 dependencies. Requires Node 4+.
 
 ## Features
 
