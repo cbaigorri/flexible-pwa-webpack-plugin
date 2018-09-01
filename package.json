@@ -27,10 +27,10 @@
   "keywords": [
     "manifest",
     "manifest.json",
+    "webpack",
     "icons",
     "resize",
     "favicon",
-    "webpack",
     "inject",
     "pwa",
     "progressive",
