@@ -11,8 +11,12 @@
     "test": "npm run clean && npm run build && node tests/index.js",
     "prepublishOnly": "npm run build",
     "pretty": "prettier --write",
-    "lint": "eslint",
+    "lint": "eslint"
+  },
+   "husky": {
+    "hooks": {
     "precommit": "lint-staged"
+    }
   },
   "dependencies": {
     "core-js": "^2.5.7",
