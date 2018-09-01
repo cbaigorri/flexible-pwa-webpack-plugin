@@ -36,7 +36,7 @@ $ yarn add flexible-pwa-webpack-plugin
 
 ✔ ES6+ ready
 
-## Basic Usage
+## Usage
 
 Add the plugin to your webpack config as follows:
 
@@ -186,6 +186,7 @@ It will also create a `manifest.json` for you:
 - [ ] Caching
 - [ ] Tests
 - [ ] Working examples
+- [ ] Emit Webpack hooks (`flexiblePwaWebpackPluginBeforeEmit`)
 
 ## License
 
