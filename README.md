@@ -12,7 +12,7 @@ A flexible webpack plugin for generating favicons, `manifest.json` and injecting
 
 > You control the output size(s) and format(s).
 
-> Support pixel-perfect resizing for pixel art icons.
+> Supports pixel-perfect resizing for pixel art icons.
 
 ✔ CDN and cache friendly
 
