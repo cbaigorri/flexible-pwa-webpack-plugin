@@ -20,17 +20,20 @@ $ yarn add flexible-pwa-webpack-plugin
 
 ✔ Auto icon resizing
 
-> You are in control of the source image (example: can be a different image source for the shortcut icon and the home screen icon).
+> You control the source image (example: can be a different image source for the shortcut icon and the home screen icon).
 
-> PNG, JPG and ICO input/output formats supported.
+> You control the output size(s).
 
 > Support pixel-perfect resizing for pixel art icons.
 
 ✔ CDN and cache friendly
 
-> You are in control of the output public path and filename for all or individual icons (example: the shortcut icon will go to `/favicon.ico` and all other icons will go to `https://my-cdn.com/icon-${size}-${hash}${extension}`).
+> You control the output path (example: the shortcut icon will go to `/favicon.ico` and all other icons will go to `https://my-cdn.com/icon-${size}-${hash}${extension}`).
 
-✔ Auto manifest injection on HTML
+✔ Auto `manifest.json` generation
+
+✔ Auto manifest injection in HTML
+
 ✔ ES6+ ready
 
 ## Basic Usage
