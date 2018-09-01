@@ -22,13 +22,13 @@ $ yarn add flexible-pwa-webpack-plugin
 
 > You control the source image (example: can be a different image source for the shortcut icon and the home screen icon).
 
-> You control the output size(s).
+> You control the output size(s) and format(s).
 
 > Support pixel-perfect resizing for pixel art icons.
 
 ✔ CDN and cache friendly
 
-> You control the output path (example: the shortcut icon will go to `/favicon.ico` and all other icons will go to `https://my-cdn.com/icon-${size}-${hash}${extension}`).
+> You control the output path (example: the shortcut icon will go to `/favicon.ico` and all other icons will use the public path `https://my-cdn.com/icons/icon-${size}-${hash}${extension}`).
 
 ✔ Auto `manifest.json` generation
 
