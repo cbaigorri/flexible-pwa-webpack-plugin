@@ -49,14 +49,12 @@ const FlexiblePwaWebpackPlugin = require('flexible-pwa-webpack-plugin');
 
 ...
 
-...
-
 plugins: [
   new FlexiblePwaWebpackPlugin({
     output: {
       manifest: {
         filename: 'manifest.json',
-        publicPath: 'https://my-cdn.com/',
+        publicPath: 'https://my-cdn.com/icons/',
         injectHtml: true,
       },
       icons: {
