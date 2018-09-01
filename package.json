@@ -29,6 +29,7 @@
     "manifest",
     "manifest.json",
     "webpack",
+    "plugin",
     "icons",
     "resize",
     "favicon",

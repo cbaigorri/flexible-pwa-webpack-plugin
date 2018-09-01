@@ -16,7 +16,7 @@ A flexible webpack plugin for generating favicons, `manifest.json` and injecting
 
 ✔ CDN and cache friendly
 
-> You control the output path (example: the shortcut icon will go to `/favicon.ico` and all other icons will use the public path `https://my-cdn.com/icons/icon-${size}-${hash}${extension}`).
+> You control the output path (example: the shortcut icon will go to `/favicon.ico` and all other icons will use the public path `https://my-cdn.com/icon-${size}-${hash}${extension}`).
 
 ✔ Auto `manifest.json` generation
 
@@ -54,7 +54,7 @@ plugins: [
     output: {
       manifest: {
         filename: 'manifest.json',
-        publicPath: 'https://my-cdn.com/icons/',
+        publicPath: 'https://my-cdn.com/',
         injectHtml: true,
       },
       icons: {
