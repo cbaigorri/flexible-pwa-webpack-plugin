@@ -13,9 +13,9 @@
     "pretty": "prettier --write",
     "lint": "eslint"
   },
-   "husky": {
+  "husky": {
     "hooks": {
-    "precommit": "lint-staged"
+      "precommit": "lint-staged"
     }
   },
   "dependencies": {
