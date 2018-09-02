@@ -2,7 +2,7 @@
 
 [![NPM version](https://img.shields.io/npm/v/flexible-pwa-webpack-plugin.svg)](https://www.npmjs.com/package/flexible-pwa-webpack-plugin) [![Dependency status](https://david-dm.org/olivierpascal/flexible-pwa-webpack-plugin.svg)](https://david-dm.org/olivierpascal/flexible-pwa-webpack-plugin) [![License](https://img.shields.io/npm/l/flexible-pwa-webpack-plugin.svg)](https://github.com/olivierpascal/flexible-pwa-webpack-plugin/blob/master/LICENSE)
 
-A flexible webpack plugin for generating favicons, `manifest.json` and injecting HTML header tags. If you want full control over what is generated and where, go for it. Only 4 dependencies. Requires Node 4+.
+A flexible Webpack plugin for generating favicons, `manifest.json` and injecting HTML header tags. If you want full control over what is generated and where, go for it. Only 4 dependencies. Requires Webpack 4+ and Node 6+.
 
 ## Features
 
@@ -38,7 +38,7 @@ $ yarn add flexible-pwa-webpack-plugin
 
 ## Usage
 
-Add the plugin to your webpack config as follows:
+Add the plugin to your Webpack config as follows:
 
 ```javascript
 // ES6+
@@ -70,7 +70,7 @@ plugins: [
     manifest: {
       name: 'Flexible Progressive Web App Webpack Plugin',
       shortName: 'PWA',
-      description: 'A flexible PWA webpack plugin.',
+      description: 'A flexible PWA Webpack plugin.',
       lang: 'en',
       startUrl: '/?utm_source=homescreen',
       display: 'standalone',
@@ -186,7 +186,7 @@ It will also create a `manifest.json` for you:
 - [ ] Tests
 - [ ] Working examples
 - [ ] Typescript support (`index.d.ts`)
-- [ ] Emit webpack hooks (`flexiblePwaWebpackPluginBeforeEmit`)
+- [ ] Emit Webpack hooks (`flexiblePwaWebpackPluginBeforeEmit`)
 - [ ] Caching to reduce build time
 - [ ] Drop `core-js` dependency
 

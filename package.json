@@ -26,18 +26,16 @@
     "to-ico": "^1.1.5"
   },
   "keywords": [
+    "webpack",
     "manifest",
     "manifest.json",
-    "webpack",
-    "plugin",
-    "icons",
-    "resize",
-    "favicon",
-    "inject",
     "pwa",
     "progressive",
     "webapp",
-    "es6"
+    "resize",
+    "icons",
+    "favicons",
+    "inject"
   ],
   "repository": {
     "type": "git",
