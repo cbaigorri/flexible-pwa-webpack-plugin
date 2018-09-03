@@ -1,6 +1,6 @@
 {
   "name": "flexible-pwa-webpack-plugin",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "A flexible webpack plugin for generating favicons, manifest.json and injecting HTML header tags.",
   "main": "index.js",
   "license": "MIT",
