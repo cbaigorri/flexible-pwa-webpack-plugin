@@ -82,5 +82,5 @@ $RECYCLE.BIN/
 
 
 ### Custom ###
-dist/
+# dist/
 !.gitkeep
