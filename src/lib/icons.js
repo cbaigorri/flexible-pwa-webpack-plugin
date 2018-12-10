@@ -10,7 +10,6 @@ import {
   emitAsset,
   flattenArray,
   makeTag,
-  sanitizeUrl,
 } from './helpers';
 
 const supportedOutputMimeTypes = [
@@ -179,7 +178,7 @@ const getAssetsMapFromIconsList = async (iconsList, options) => {
           buffer: finalBuffer,
           hash,
           path: assetPath,
-          publicPath: sanitizeUrl(`${publicPath}/${assetPath}`),
+          publicPath: `${publicPath}/${assetPath}`,
         };
 
         return asset;

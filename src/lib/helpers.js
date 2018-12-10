@@ -42,5 +42,3 @@ export const makeTag = (name, attributes) =>
     ...Object.keys(attributes).map(key => `${key}="${attributes[key]}"`),
     '/>',
   ].join(' ');
-
-export const sanitizeUrl = url => url.replace(/([^:]|^)\/{2,}/g, '$1/');
